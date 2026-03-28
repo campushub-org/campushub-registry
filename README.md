@@ -1,62 +1,41 @@
-# campushub-registry - Service de Découverte (Eureka Server)
+# 🔍 CampusHub - Service Registry (Eureka)
 
-Ce service implémente un serveur Eureka (Service Discovery) pour l'architecture microservices Campushub. Il permet aux microservices de s'enregistrer auprès de lui au démarrage et de découvrir d'autres services par leur nom logique, facilitant ainsi la communication inter-services.
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Eureka](https://img.shields.io/badge/Netflix_Eureka-Service_Discovery-orange?style=for-the-badge&logo=netflix)](https://github.com/Netflix/eureka)
 
-### Fonctionnalités
+> Le **Service Registry** est l'annuaire dynamique de CampusHub. Basé sur Netflix Eureka, il permet à chaque microservice de se déclarer et de localiser ses pairs sans configuration d'adresses IP statiques.
 
-*   **Enregistrement des services**: Les microservices s'enregistrent auprès d'Eureka Server à leur démarrage.
-*   **Découverte des services**: Les clients Eureka peuvent interroger le serveur pour obtenir les emplacements des instances de service.
-*   **Équilibrage de charge côté client**: Intégré avec Spring Cloud LoadBalancer, il permet un équilibrage de charge simple entre les instances de service.
-*   **Surveillance de l'état des services**: Eureka Server surveille la santé des instances enregistrées.
+---
 
-### Comment ça marche
+## 🚀 Fonctionnalités Clés
 
-`campushub-registry` est une application Spring Boot configurée en tant que serveur Eureka. Au démarrage, il tente de se connecter au `campushub-config` pour obtenir ses propres propriétés de configuration. Une fois démarré, il expose une API REST que les autres services utilisent pour s'enregistrer et se découvrir.
+- **Auto-enregistrement** : Les microservices s'inscrivent automatiquement au démarrage.
+- **Health Monitoring** : Surveillance par heartbeat pour détecter les instances défaillantes.
+- **Load Balancing** : Base indispensable pour l'équilibrage de charge côté client (Ribbon/OpenFeign).
+- **Interface de Supervision** : Dashboard web complet accessible sur le port `8761`.
 
-### Commandes Utiles
+---
 
-#### Construire le service (localement, sans Docker)
+## ⚙️ Configuration & Installation
 
-Pour construire le fichier JAR exécutable du service:
-
+### Build du package (Crucial)
 ```bash
-cd campushub-deployment/campushub-registry
-./mvnw clean install -Dspring.cloud.config.uri=http://localhost:8888
-```
-*(Note: L'option `-Dspring.cloud.config.uri=http://localhost:8888` est nécessaire pour que les tests et la construction locale puissent se connecter au service `campushub-config` si celui-ci est démarré via Docker sur votre machine locale.)*
-
-#### Exécuter le service (localement, sans Docker)
-
-Assurez-vous d'avoir construit le JAR au préalable.
-
-```bash
-cd campushub-deployment/campushub-registry
-java -jar target/campushub-registry-service-0.0.1-SNAPSHOT.jar
+# Générer le JAR en sautant les tests
+./mvnw clean package -DskipTests
 ```
 
-Le service sera accessible sur `http://localhost:8761`.
-
-#### Construire et exécuter avec Docker Compose
-
-Dans le répertoire `campushub-deployment`, ce service est défini dans le fichier `docker-compose.yml`.
-
-Pour construire l'image Docker (cela inclut la construction du JAR si ce n'est pas déjà fait):
-
+### Lancement Local
 ```bash
-cd campushub-deployment
-docker-compose build campushub-registry
+./mvnw spring-boot:run
 ```
 
-Pour démarrer le conteneur du service:
-
+### Déploiement Docker
 ```bash
-cd campushub-deployment
-docker-compose up -d campushub-registry
+docker build -t campushub-registry-service .
 ```
 
-Pour vérifier les logs du service une fois démarré:
+### Dashboard
+Une fois lancé, accédez à : `http://localhost:8761` pour visualiser l'état de santé de l'écosystème.
 
-```bash
-cd campushub-deployment
-docker-compose logs campushub-registry
-```
+---
+<p align="center">L'intelligence collective au service de l'architecture distribuée</p>
